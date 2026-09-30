@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FitBuddy - Your Fitness Plan</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        .plan-title {
+            font-size: 28px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .safety-box {
+            background: rgba(255, 193, 7, 0.12);
+            border: 1px solid rgba(255, 193, 7, 0.35);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 18px;
+            line-height: 1.6;
+        }
+
+        .day-card {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 22px;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .day-title {
+            font-size: 23px;
+            margin-bottom: 5px;
+        }
+
+        .focus {
+            opacity: 0.8;
+            margin-bottom: 18px;
+        }
+
+        .workout-section {
+            margin-top: 16px;
+        }
+
+        .workout-section h4 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .exercise-list {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .exercise-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .tip-box {
+            border-radius: 14px;
+            padding: 18px;
+            margin-top: 12px;
+            background: rgba(0, 200, 150, 0.08);
+            border: 1px solid rgba(0, 200, 150, 0.2);
+            line-height: 1.6;
+        }
+
+        .nutrition-item {
+            margin-bottom: 16px;
+        }
+
+        .nutrition-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .feedback-text {
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-top: 12px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="shell wide">
+
+    <a href="/" class="back back-button">
+        ← Create New Plan
+    </a>
+
+
+    <!-- USER INFORMATION -->
+
+    <div class="card">
+
+        <span class="badge">
+            PERSONALIZED FITNESS PLAN
+        </span>
+
+        <h1>
+            Hello, {{ user.username }}! 👋
+        </h1>
+
+        <div class="stats">
+
+            <span>
+                <b>User ID</b>
+                {{ user.user_id }}
+            </span>
+
+            <span>
+                <b>Age</b>
+                {{ user.age }}
+            </span>
+
+            <span>
+                <b>Weight</b>
+                {{ user.weight }} kg
+            </span>
+
+            <span>
+                <b>Goal</b>
+                {{ user.goal.replace('_', ' ').title() }}
+            </span>
+
+            <span>
+                <b>Intensity</b>
+                {{ user.intensity.title() }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+
+    {% if message %}
+
+    <div class="success">
+        ✅ {{ message }}
+    </div>
+
+    {% endif %}
+
+
+    <!-- WORKOUT PLAN -->
+
+    <section class="card">
+
+        <h2>
+            🏋️ Your 7-Day Workout Plan
+        </h2>
+
+
+        {% if workout_plan_data %}
+
+        <h3 class="plan-title">
+            {{ workout_plan_data.title }}
+        </h3>
+
+
+        {% if workout_plan_data.safety_note %}
+
+        <div class="safety-box">
+
+            <strong>
+                ⚠️ Safety Note
+            </strong>
+
+            <br>
+
+            {{ workout_plan_data.safety_note }}
+
+        </div>
+
+        {% endif %}
+
+
+        {% for day in workout_plan_data.days %}
+
+        <div class="day-card">
+
+            <h3 class="day-title">
+                📅 {{ day.day }}
+            </h3>
+
+            <div class="focus">
+                <strong>Focus:</strong>
+                {{ day.focus }}
+            </div>
+
+
+            <!-- WARM UP -->
+
+            <div class="workout-section">
+
+                <h4>
+                    🔥 Warm-up
+                </h4>
+
+                <div class="tip-box">
+                    {{ day.warm_up }}
+                </div>
+
+            </div>
+
+
+            <!-- EXERCISES -->
+
+            <div class="workout-section">
+
+                <h4>
+                    💪 Exercises
+                </h4>
+
+                <ul class="exercise-list">
+
+                    {% for exercise in day.exercises %}
+
+                    <li>
+                        {{ exercise }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+
+            <!-- COOLDOWN -->
+
+            <div class="workout-section">
+
+                <h4>
+                    🧘 Cooldown
+                </h4>
+
+                <div class="tip-box">
+                    {{ day.cooldown }}
+                </div>
+
+            </div>
+
+
+            <!-- RECOVERY -->
+
+            <div class="workout-section">
+
+                <h4>
+                    ❤️ Recovery Tip
+                </h4>
+
+                <div class="tip-box">
+                    {{ day.recovery_tip }}
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+
+        <p>
+            Workout plan could not be displayed.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- NUTRITION -->
+
+    <section class="card">
+
+        <h2>
+            🥗 Nutrition & Recovery
+        </h2>
+
+
+        {% if nutrition_tip_data %}
+
+        <div class="nutrition-item">
+
+            <strong>
+                🍎 Nutrition Tip
+            </strong>
+
+            <div class="tip-box">
+                {{ nutrition_tip_data.tip }}
+            </div>
+
+        </div>
+
+
+        <div class="nutrition-item">
+
+            <strong>
+                💧 Hydration
+            </strong>
+
+            <div class="tip-box">
+                {{ nutrition_tip_data.hydration }}
+            </div>
+
+        </div>
+
+
+        <div class="nutrition-item">
+
+            <strong>
+                😴 Recovery
+            </strong>
+
+            <div class="tip-box">
+                {{ nutrition_tip_data.recovery }}
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <p>
+            Nutrition information is not available.
+        </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FEEDBACK -->
+
+    <section class="card">
+
+        <h2>
+            🔄 Improve Your Plan
+        </h2>
+
+        <p class="feedback-text">
+            Want to change your workout?
+            Tell FitBuddy what you want.
+        </p>
+
+        <p class="feedback-text">
+            Example:
+            "Add more cardio"
+            or
+            "Make Day 5 easier"
+            or
+            "Add yoga exercises"
+        </p>
+
+
+        <form
+            method="post"
+            action="/submit-feedback"
+        >
+
+            <input
+                type="hidden"
+                name="user_id"
+                value="{{ user.user_id }}"
+            >
+
+
+            <textarea
+                name="feedback"
+                required
+                minlength="3"
+                maxlength="2000"
+                placeholder="Tell FitBuddy what you want to change..."
+            ></textarea>
+
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                🔄 Update My Plan
+            </button>
+
+        </form>
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>
